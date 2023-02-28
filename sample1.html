@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="page">
+        <!-- Below is the div to house the iFrame -->
+        <div id="iFrame" style="text-align:center;"></div>
+    </div>
+
+<script src="https://www.tripleplaypay.com/static/js/triple.js"></script>
+</body>
+<script>
+    const triple = new Triple('testapikey');
+
+    // Below, we have set some of the available custom options for the iFrame
+    customizations = {
+    containerSelector: '#iFrame',
+    // We are starting with an empty amount because it is going to be calculated by the cart quantity
+    amount: "",
+    paymentOptions: ['credit_card'],
+    tokenMode: false,
+    styles: {
+    button: {
+        color: '#fff',
+        background: 'rgb(248, 150, 31)',
+        borderRadius: '15px',
+        fontSize: '16px',
+        active: {
+            color: '#eef7e9',
+            background: 'rgb(70, 83, 130)',
+        },
+        hover: {
+            color: '#eef7e9',
+            background: 'rgb(70, 83, 130)',
+        },
+    },
+    input: {
+        color: 'black',
+        background: 'white',
+        borderRadius: '5px',
+        borderColor: 'gray',
+        borderWidth: '1px',
+        height: '40px',
+        fontSize: '16px',
+        fontWeight: '300',
+        focus: {
+            borderColor: '#F89720',
+            background: 'white',
+            color: 'gray',
+        },
+        error: {
+            borderColor: '#cf6565',
+            background: 'white',
+            color: '#bfbfbf',
+        },
+        placeholder: {
+            color: 'gray',
+            fontSize: '16px',
+            fontWeight: '300',
+        },
+        errorText: {
+            color: 'red',
+            fontSize: '12px',
+            fontWeight: '500',
+        },
+        },
+    },
+    
+    onError: (errorData) => {
+        console.log('Error');
+        console.log(errorData);
+        alert = document.createElement('div');
+        alert.innerHTML = '<div>Something went wrong.</div>';
+        document.getElementById('#iframe').append(alert);
+    },
+    onSuccess: (data) => {
+        alert("Order placed successfully.");
+        document.getElementById("#iframe").innerHTML = '<div class="ms-4"><h1>Thank you for your order</h1><p>Your business means a lot to us.</br>Somebody from our team will reach out soon with the tracking code for your shipment.</p></div>';
+    },
+    }
+
+triple.generatePaymentForm(customizations);
+
+</script>
+</html>
