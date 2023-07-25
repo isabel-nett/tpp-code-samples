@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription Terminal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      color: darkslategray;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .flower-icon {
+      width: 60px;
+      height: 60px;
+      fill: pink;
+    }
+
+    .title {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      color: rgb(118, 211, 118);
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+    }
+
+    .form-check-label {
+      font-weight: normal;
+    }
+
+    .btn-primary {
+      background-color: rgb(118, 211, 118);
+      color: white;
+      font-weight: 500;
+      border-color: transparent;
+    }
+
+    .btn-primary:hover {
+      background-color: pink;
+      border-color: pink;
+      color: darkslategray;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container mt-5 col-lg-4">
+    <div class="flower-icon mb-3"><svg xmlns="http://www.w3.org/2000/svg" class="bi bi-truck" viewBox="0 0 16 16">
+      <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+    </svg></div>
+    <h1 class="title">Flower Delivery Subscription</h1>
+    <!-- Amount input -->
+    <div class="form-group">
+      <label for="amount">Recurring Amount</label>
+      <input type="text" class="form-control" id="amount" placeholder="$">
+    </div>
+
+    <!-- Toggle monthly vs weekly charge -->
+    <div class="mt-3">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" name="subscriptionType" id="monthly" value="monthly" checked>
+        <label class="form-check-label" for="monthly">Monthly Delivery (Charge Monthly)</label>
+      </div>
+      <div class="form-check">
+        <input type="radio" class="form-check-input" name="subscriptionType" id="weekly" value="weekly">
+        <label class="form-check-label" for="weekly">Weekly Delivery (Charge Weekly)</label>
+      </div>
+    </div>
+
+    <!-- Toggle for start date -->
+    <div class="form-group mt-3">
+      <label for="startDate">Start Date</label>
+      <input type="date" class="form-control" id="startDate">
+    </div>    
+
+    <!-- Button to open iframe configuration -->
+    <div class="d-flex justify-content-end mt-3">
+    <button type="button" class="btn btn-primary mt-3" onclick="openIframe()">Open Sign-Up Page</button>
+    </div>
+  </div>
+
+  <script src="https://sandbox.tripleplaypay.com/static/js/triple.js"></script>
+  <script>
+    const {
+      showFullName,
+      showEmailOptIn,
+      SOURCE,
+      REPLACE_PERCENT_VALUE,
+      PAYMENT_TYPES
+    } = {
+      showFullName: {
+        value: true
+      },
+      showEmailOptIn: {
+        value: true
+      },
+      SOURCE: "source_value",
+      REPLACE_PERCENT_VALUE: "%",
+      PAYMENT_TYPES: {
+        CHARGE: "charge"
+      }
+    };
+  
+    async function openIframe() {
+      // Get values from input fields and toggles
+      const amount = document.getElementById('amount').value;
+      const subscriptionType = document.querySelector('input[name="subscriptionType"]:checked').value;
+      const startDate = document.getElementById('startDate').value;
+  
+      // Build the request payload (fieldsData)
+      const fieldsData = {
+        paymentType: "subscription",
+        amount: amount,
+        newWindow: true,
+        fromLink: true,
+        paymentOptions: ['credit_card'],
+        apikey: 'TESTAPIKEY',
+        showEmail: true,
+        zipMode: "required",
+        source: SOURCE,
+        fullName: showFullName.value,
+        optIn: showEmailOptIn.value,
+        start: startDate,
+        interval: subscriptionType,
+        frequency: 1,
+        styles: {
+          "input": {
+            borderLeftStyle: 'hidden',
+            borderTopStyle: 'hidden',
+            borderRightStyle: 'hidden',
+            borderRadius: '0',
+            background: 'transparent',
+            borderColor: '#f8c0cc',
+            borderStyle: 'solid',
+            borderWidth: '1px',
+          },
+          "button": {
+            color: 'black',
+            background: '#f8c0cc',
+          }
+        }
+      };
+  
+      // Convert fieldsData to JSON
+      const payload = JSON.stringify(fieldsData);
+  
+      try {
+        // Construct the URL with params
+        const asBase64 = btoa(payload);
+        const url = `https://sandbox.tripleplaypay.com/iframe/payment?params=${asBase64}`;
+  
+        // Open the iframe in a new page with the constructed URL
+        window.open(url, '_blank');
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+  </script>  
+</body>
+</html>
