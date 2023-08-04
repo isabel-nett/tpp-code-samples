@@ -119,7 +119,7 @@
     async function openIframe() {
       // Get values from input fields and toggles
       const amount = document.getElementById('amount').value;
-      const savePaymentToken = document.getElementById('saveCard').checked;
+      const tokenMode = document.getElementById('saveCard').checked ? "save" : false; // Updated line
       const allowTip = document.getElementById('tipsEntry').checked;
   
       // Build the request payload (fieldsData)
@@ -130,7 +130,7 @@
         fromLink: true,
         paymentOptions: ['credit_card'],
         apikey: 'testapikey',
-        savePaymentToken: savePaymentToken,
+        tokenMode: tokenMode,
         showEmail: true,
         zipMode: "required",
         source: SOURCE,
