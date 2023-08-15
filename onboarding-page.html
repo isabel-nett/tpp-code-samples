@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+  <title>Client Details</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top">
+    <div class="container-fluid">
+      <h3>{{ clientData.name }}</h3>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Client Details</a>
+            <ul class="dropdown-menu">
+              <li class="nav-item">
+                <a class="nav-link" href="#keys">Keys & IDs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#businessDetails">Business Details</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#address">Address</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#processor">Processing</a>
+          </li>
+        </ul>
+      </div>
+      <div class="control-btns d-flex gap-2" v-if="!isEditing">
+        <button id="editBtn" class="btn btn-primary">Edit</button>
+        <button id="closeBtn" class="btn btn-primary">Close</button>
+      </div>
+      <!-- Set below buttons to display none and create JS for making them block when Edit is clicked -->
+      <div class="complete-btns d-flex row align-items-center" v-if="isEditing">
+        <button id="cancelBtn" class="btn cancel-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+          Cancel
+        </button>
+        <div class="vr"></div>
+        <button id="saveBtn" class="btn btn-success save-btn">Save</button>
+      </div>
+    </div>
+  </nav>
+    <div class="container mt-5">
+      <h3>Account Details</h3>
+      <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
+      <div class="row">
+          <div class="col pt-2">
+              <div class="fz-14">
+              <span>Level: {{ clientData.level }} |</span>
+              <span> Parent: {{ clientData.parent.name }} |</span>
+              <span> Last activity: x.xx.xxxx |</span>
+              <span> Production Api key: {{ clientData.enabled }} </span>
+              </div>
+          </div>
+      </div>
+      <div id="clientDetails" class="mt-3">
+        <div id="keys" class="section">
+          <h5>Keys & IDs</h5>
+          <div class="api-keys">
+            <!-- Add to below div: v-if="user.role === 'admin'" -->
+            <div class="acct-id">
+              <label>Account ID:</label>
+              <div class="acct-id">
+                <span>{{ clientData.id }}</span>
+                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+              </div>
+            </div>
+            <div class="key">
+              <label>Master API Key:</label>
+              <div class="key-value">
+                <span>{{ clientData.iframekey }}</span>
+                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+              </div>
+            </div>
+            <div class="key">
+              <label>Master Iframe Key:</label>
+              <div class="key-value">
+                <span>{{ clientData.iframekey }}</span>
+                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+              </div>
+            </div>
+            <!-- Add more API keys here as needed -->
+          </div>
+          <button class="btn btn-primary">Add Dedicated API Key</button>
+        </div>
+        <!-- Add to below section: v-if="user.role === 'partner' | 'admin'" -->
+        <div id="businessDetails" class="section">
+          <h5>Business Information</h5>
+          <div class="form-group">
+            <label for="name">Legal Name:</label>
+            <input type="text" class="form-control" id="name" v-model="clientData.billing.legal_name" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="name">DBA:</label>
+            <input type="text" class="form-control" id="name" v-model="clientData.billing.dba_name" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" v-model="clientData.email" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" class="form-control" id="phone" v-model="clientData.phone" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="logo">Logo:</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="logo" v-model="clientData.logo" :disabled="!isEditing">
+              <button class="btn btn-secondary" type="button" :disabled="!isEditing">Upload</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timezone">Timezone:</label>
+            <select class="form-control" id="timezone" v-model="clientData.tz" :disabled="!isEditing">
+              <!-- Options for timezone dropdown can be added here -->
+            </select>
+          </div>
+        </div>
+        <div id="address" class="section">
+          <h5>Address</h5>
+          <div class="form-group">
+            <label for="businessAddress">Address:</label>
+            <input type="text" class="form-control" id="businessAddress" v-model="clientData.address" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="businessAddress2">Address 2:</label>
+            <input type="text" class="form-control" id="businessAddress2" v-model="clientData.address2" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="businessCity">City:</label>
+            <input type="text" class="form-control" id="businessCity" v-model="clientData.city" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="businessState">State:</label>
+            <input type="text" class="form-control" id="businessState" v-model="clientData.state" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="businessZipcode">Zipcode:</label>
+            <input type="text" class="form-control" id="businessZipcode" v-model="clientData.zipcode" :disabled="!isEditing">
+          </div>
+          <div class="form-group">
+            <label for="businessCountry">Country:</label>
+            <input type="text" class="form-control" id="businessCountry" v-model="clientData.country" :disabled="!isEditing">
+          </div>
+        </div>
+        
+        <!-- Add to below section: v-if="user.role === 'admin'" -->
+        <div id="processor" class="section">
+          <h3>Processing</h3>
+          <div class="form-group">
+              <label for="processorSelect">Processor:</label>
+              <!-- Add to below select:  v-model="clientData.config.payment" :placeholder=clientData.config.payment -->
+              <select class="form-control" id="processorSelect" :disabled="!isEditing">
+                  <option value="FIS">FIS</option>
+                  <option value="MerchantE">Merchant E</option>
+                  <option value="Bluesnap">Bluesnap</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label for="processorMid">{{ clientData.config.payment.toUpperCase() }} Merchant ID:</label>
+            <input type="number" class="form-control" id="processorMid" v-model="clientData.mid" :disabled="!isEditing">
+          </div>  
+          <div class="form-group">
+              <label for="cardRate">Card Rate:</label>
+              <input type="number" class="form-control" id="cardRate" v-model="clientData.pricing.card_rate" :disabled="!isEditing">
+          </div>
+        </div>
+      </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+
+<script>
+// Mock data (replace this with actual API calls)
+let mockClientData = {
+  status: true,
+  id: "4a731b24-0beb-457c-9585-2362c6a53cf5",
+  message: {
+    hashcode: "TRIPLE",
+    name: "TriplePlayPay",
+    logo: "/static/images/LogoIcon.png",
+    timezone: "US/Central",
+    email: "cto@tripleplaypay.com",
+    callback: "",
+    pricing: {
+      etf: "500",
+      ach_p2c: false,
+      balance: 0,
+      ach_rate: ".20",
+      card_p2c: false,
+      low_rate: "0+0",
+      tax_rate: "0.00",
+      card_rate: "2.89",
+      rev_share: 50,
+      crypto_p2c: false,
+      client_rate: 0,
+      crypto_rate: "1.99+5",
+      client_balance: ""
+    },
+    config: {
+      ach: "xpress",
+      ccs: 3,
+      crypto: "curpay",
+      enroll: true,
+      payout: "split_settlment",
+      timing: 60,
+      devices: 5,
+      enabled: true,
+      onboard: false,
+      payment: "fis",
+      velocity: 100,
+      terminals: "dejavooo",
+      whitelabel: {
+        isDone: true,
+        notifications: {
+          transactions: {
+            fraudulent: {
+              isActive: true
+            },
+            receiptForApproved: {
+              isActive: true
+            },
+            transactionGreater: {
+              amount: null,
+              isActive: true
+            }
+          },
+          merchantConfig: {
+            smtp: {
+              tls: null,
+              auth: null,
+              host: null,
+              port: null,
+              password: null,
+              username: null
+            },
+            emails: {
+              fraudulent: {
+                isActive: false
+              },
+              receiptForApproved: {
+                isActive: true
+              },
+              transactionGreater: {
+                amount: null,
+                isActive: true
+              }
+            },
+            recipients: [ ]
+          }
+        }
+      },
+      high_ticket: 10000,
+      enroll_email: false,
+      transactions: 5,
+      pause_settlement: false
+    },
+    wallet: [
+      "TRIPLE-BANK:*"
+    ],
+    fee: {
+      pci: {
+        amount: "15.00",
+        end: "2999-01-01",
+        interval: "monthly"
+      },
+      etf: {
+        amount: "199.00",
+        end: "2999-01-01",
+        interval: "event"
+      },
+      chargeback: {
+        amount: "15.00",
+        end: "2999-01-01",
+        interval: "event"
+      }
+    },
+    level: "Parent"
+  }
+}
+
+const app = new Vue({
+  el: '#clientDetails',
+  data: {
+    clientData: { ...mockClientData },
+    isEditing: false,
+  },
+  methods: {
+    editClient() {
+      this.isEditing = true;
+    },
+    saveChanges() {
+      // Perform API call to update client data (replace with actual API call)
+      // For now, we'll just update the mock data
+      mockClientData = { ...this.clientData };
+      this.isEditing = false;
+    },
+    cancelChanges() {
+      this.clientData = { ...mockClientData };
+      this.isEditing = false;
+    },
+  },
+  mounted() {
+    // Attach event listeners
+    document.getElementById('editBtn').addEventListener('click', this.editClient);
+    document.getElementById('saveBtn').addEventListener('click', this.saveChanges);
+    document.getElementById('cancelBtn').addEventListener('click', this.cancelChanges);
+  },
+  copyToClipboard(text) {
+    const input = document.createElement('textarea');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  },
+});
+</script>
+</body>
+<style>
+.section {
+  margin-top: 15px;
+}
+
+.form-group {
+  margin-top: 5px;
+}
+
+.complete-btns {
+  margin: 10px;
+}
+
+.cancel-btn {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 7px 0;
+  width: 50px;
+  font-size: 10px;
+}
+
+.cancel-btn svg {
+  margin-bottom: 2px;
+}
+
+.cancel-btn:hover {
+  background: none;
+  color: orange;
+  transition: ease-in-out 200ms;
+}
+
+.vr {
+  border-left: 1px solid black;
+  background: none;
+  padding: 0 7px;
+}
+
+.save-btn {
+  width: 70px;
+  margin: 7px 0;
+}
+
+</style>
+</html>
