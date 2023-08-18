@@ -17,7 +17,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Client Details</a>
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Account Details</a>
             <ul class="dropdown-menu">
               <li class="nav-item">
                 <a class="nav-link" href="#keys">Keys & IDs</a>
@@ -39,29 +39,40 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#processor">Processing</a>
-          </li>
           <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Processing</a>
+            <ul class="dropdown-menu">
+              <li class="nav-item">
+                <a class="nav-link" href="#cards">Cards</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#ach">ACH</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#crypto">Crypto</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#terminals">Terminals</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#addtnl">Settings & Fees</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown" v-if="clientData.level === 'Parent'">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Submerchant Settings</a>
             <ul class="dropdown-menu">
               <li class="nav-item">
-                <a class="nav-link" href="#links">Links</a>
+                <a class="nav-link" href="#enroll">Enrollment</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#subpricing">Subpricing</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#childProcessing">Submerchant Processing</a>
+                <a class="nav-link" href="#subProcessing">Processing</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#whitelabel">Whitelabel</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#ownerDetails">Ownership</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#settlementAccount">Settlement</a>
               </li>
             </ul>
           </li>
@@ -69,7 +80,7 @@
       </div>
       <div class="control-btns d-flex gap-2">
         <button id="editBtn" class="btn btn-primary">Edit</button>
-        <button id="closeBtn" class="btn btn-primary">Back to Clients</button>
+        <button id="closeBtn" class="btn btn-primary">Back to Accounts List</button>
       </div>
       <div class="complete-btns d-flex row align-items-center">
         <button id="cancelBtn" class="btn cancel-btn">
@@ -84,172 +95,384 @@
       </div>
     </div>
   </nav>
-  <div class="container mt-5">
-    <h3>Onboarding Data</h3>
-    <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
-    <div class="row">
-        <div class="col pt-2">
-            <div class="fz-14">
-            <span>Level: {{ clientData.level }} |</span>
-            <span> Parent: {{ clientData.parent.name }} |</span>
-            <span> Last activity: x.xx.xxxx</span>
+  <div class="container mt-3">
+    <div class="d-flex">
+      <div class="col-lg-10">
+        <h3 class="mt-0">Onboarding Data</h3>
+        <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
+        <div class="row">
+            <div class="col pt-2">
+                <div class="fz-14">
+                <span>Level: {{ clientData.level }} |</span>
+                <span> Parent: {{ clientData.parent.name }} |</span>
+                <span> Last activity: x.xx.xxxx</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mt-3">
-      <div id="keys" class="section">
-        <h5>IDs & Links</h5>
-        <div class="acct-id">
-          <label>Onboarding ID:</label>
-          <span>{{ clientData.id }}</span>
-          <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+      </div>
+      <div class="col-lg-2 d-flex gap-1">
+        <div>
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Actions
+          </button>
+          <ul class="dropdown-menu">
+            <!-- Add to below div: v-if="user.role === 'admin'" -->
+            <li><a class="dropdown-item" href="#ctaSide" data-bs-toggle="offcanvas" aria-controls="ctaSide">Enrollment CTA</a></li>
+            <!-- Add to below div: v-if="user.role === 'admin'" -->
+            <li><a class="dropdown-item" href="#kycSide" data-bs-toggle="offcanvas" aria-controls="kycSide">KYC</a></li>
+            <!-- Add to below div: v-if="user.role === 'admin'" -->
+            <li><a class="dropdown-item" href="#approveSide" data-bs-toggle="offcanvas" aria-controls="approveSide">Approve for Production</a></li>
+            <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
+            <li><a class="dropdown-item" href="#deSide" data-bs-toggle="offcanvas" aria-controls="deSide">Deactivate/Delete</a></li>
+          </ul>
         </div>
-        <div class="cta-link">
-          <label>CTA Link:</label>
-          <span>{{ ctaLink }}</span>
-          <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(ctaLink)">Copy</button>
+        <div>
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Open
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#dataSide" data-bs-toggle="offcanvas" aria-controls="dataSide">IDs & Full Data</a></li>
+            <li><a class="dropdown-item" href="#contactsSide" data-bs-toggle="offcanvas" aria-controls="contactsSide">Account Contacts</a></li>
+            <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
+            <li><a class="dropdown-item" href="#">Parent</a></li>
+            <!-- Add to below div: v-if="user.role === 'admin'" -->
+            <li><a class="dropdown-item" href="#notesSide" data-bs-toggle="offcanvas" aria-controls="notesSide">Notes</a></li>
+            <li><a class="dropdown-item" href="#docsSide" data-bs-toggle="offcanvas" aria-controls="docsSide">Documents</a></li>
+            <li><a class="dropdown-item" href="#">Payment Page</a></li>
+          </ul>
         </div>
       </div>
+      <!-- IDs & Data Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="dataSide" aria-labelledby="dataSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="dataSide">IDs & Full Data</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="dataSide">
+            <div class="side-sub">Onboarding ID</div>
+            <div>{{ clientData.id }}</div>
+            <div class="side-sub">Onboarding Hashcode</div>
+            <div>{{ clientData.hashcode }}</div>
+          </div>
+          <div class="side-sub">Full Account Data</div>
+          <div>
+            {{ clientData }}
+          </div>
+        </div>
+      </div>
+      <!-- CTA Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="ctaSide" aria-labelledby="ctaSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="ctaSide">Enrollment Click-to-Agree Form</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="ctaSide">
+            <div class="side-sub">CTA Link</div>
+            <div class="small">Each enrollment click-to-agree form and link is unique to its account. 
+              The forms are pre-populated with account data that has already been saved. </div>
+            <button class="btn btn-sm btn-secondary" @click="showCtaLink = !showCtaLink">{{ showCtaLink ? 'Hide Link' : 'View Link' }}</button>
+            <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(ctaLink)">Copy Link</button>
+            <span :hidden="!showCtaLink">{{ ctaLink }}</span>
+            <div class="side-sub mt-4">Send CTA</div>
+            <div class="small">Enter up to 3 recipients and add a message to the top of the form's page for efficient completion 
+              of the enrollment process.</div>
+            <div class="mb-1">
+              <label for="email1" class="form-label">Email Addresses</label>
+              <input type="email" class="form-control" id="email1" placeholder="name@example.com">
+            </div>
+            <div class="mb-1">
+              <input type="email" class="form-control" id="email2" placeholder="name@example.com">
+            </div>
+            <div class="mb-3">
+              <input type="email" class="form-control" id="email3" placeholder="name@example.com">
+            </div>
+            <div class="mb-3 mt-2">
+              <label for="ctaMessage" class="form-label">Message</label>
+              <textarea class="form-control" id="ctaMessage" rows="3"></textarea>
+            </div>
+            <button class="btn btn-sm btn-secondary">Send Enrollment CTA</button>
+          </div>
+        </div>
+      </div>
+      <!-- KYC Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="kycSide" aria-labelledby="kycSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="kycSide">KYC Data</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="kycData">
+            <div>KYC {{ kyc ? 'Passed' : 'Not Yet Passed' }}</div>
+            <button class="btn btn-sm btn-secondary">Run KYC</button>
+            <div class="side-sub">KYC Data</div>
+            <div>{{ clientData.kyc }}</div>
+          </div>
+        </div>
+      </div>
+      <!-- Deactivate/Delete Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="deSide" aria-labelledby="deSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="deSide">Submit a Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="deSide">
+            <div class="side-sub">Submit a Ticket to Deactivate</div>
+            <div>If this account is no longer active under a contract with its parent, 
+              send an email to our team with a request to mark this account as inactive.</div>
+            <button class="btn btn-sm btn-secondary">Request Deactivation</button>
+            <div class="side-sub">Submit a Ticket to Delete</div>
+            <div>Submit a ticket to delete the client. We will archive the account data securely.</div>
+            <button class="btn btn-sm btn-secondary">Request Deletion</button>
+          </div>
+        </div>
+      </div>
+      <!-- Contacts Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="contactsSide" aria-labelledby="contactsSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="contactsSide">Contacts</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <!-- ALL CONTACT INPUTS NEED V-MODELS -->
+        <div class="offcanvas-body">
+          <div id="contactsSide">
+            <h5>Contact 1</h5>
+            <div class="form-group">
+              <label for="firstName1">First Name:</label>
+              <input type="text" class="form-control" id="firstName1">
+            </div>
+            <div class="form-group">
+              <label for="lastName1">Last Name:</label>
+              <input type="text" class="form-control" id="lastName1">
+            </div>
+            <div class="form-group">
+              <label for="email1">Email:</label>
+              <input type="email" class="form-control" id="email1">
+            </div>
+            <div class="form-group">
+              <label for="phone1">Phone:</label>
+              <input type="tel" class="form-control" id="phone1">
+            </div>
+
+            <h5>Contact 2</h5>
+            <div class="form-group">
+              <label for="firstName2">First Name:</label>
+              <input type="text" class="form-control" id="firstName2">
+            </div>
+            <div class="form-group">
+              <label for="lastName2">Last Name:</label>
+              <input type="text" class="form-control" id="lastName2">
+            </div>
+            <div class="form-group">
+              <label for="email2">Email:</label>
+              <input type="email" class="form-control" id="email2">
+            </div>
+            <div class="form-group">
+              <label for="phone2">Phone:</label>
+              <input type="tel" class="form-control" id="phone2">
+            </div>
+
+            <h5>Contact 3</h5>
+            <div class="form-group">
+              <label for="firstName3">First Name:</label>
+              <input type="text" class="form-control" id="firstName3">
+            </div>
+            <div class="form-group">
+              <label for="lastName3">Last Name:</label>
+              <input type="text" class="form-control" id="lastName3">
+            </div>
+            <div class="form-group">
+              <label for="email3">Email:</label>
+              <input type="email" class="form-control" id="email3">
+            </div>
+            <div class="form-group">
+              <label for="phone3">Phone:</label>
+              <input type="tel" class="form-control" id="phone3">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Approve for Production Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="approveSide" aria-labelledby="approveSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="approveSide">Approve for Production</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="approveSide">
+            <div class="side-sub">Welcome Email</div>
+            <div>Per parent settings, the welcome email will include:</div>
+            <!-- Email Contents Here -->
+        </div>
+      </div>
+      <!-- Notes Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="notesSide" aria-labelledby="notesSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="notesSide">Notes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="notesSide">
+            Some text as placeholder.
+          </div>
+        </div>
+      </div>
+      <!-- Docs Offcanvas -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="docsSide" aria-labelledby="docsSide">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docsSide">Notes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div id="docsSide">
+            Some text as placeholder.
+          </div>
+        </div>
+      </div>
+    </div>
+      <hr>
       <!-- Add to below section: v-if="user.role === 'partner' | 'admin'" -->
       <div id="businessDetails" class="section row">
         <h5>Business Information</h5>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="name">Legal Name:</label>
           <input type="text" class="form-control" id="name" v-model="clientData.billing.legal_name" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="name">DBA:</label>
           <input type="text" class="form-control" id="name" v-model="clientData.billing.dba_name" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownershipType">Business Structure:</label>
           <select class="form-control" id="ownershipType" v-model="clientData.billing.ownershipType" :disabled="!isEditing">
             <!-- Options for businessTypes dropdown can be added here -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="taxid">Tax ID:</label>
           <input type="text" class="form-control" id="taxid" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="timezone">Timezone:</label>
           <select class="form-control" id="timezone" v-model="clientData.tz" :disabled="!isEditing">
             <!-- Options for timezone dropdown can be added here -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessDetails">Description of Activities:</label>
           <input type="text" class="form-control" id="businessDetails" :disabled="!isEditing">
         </div>
       </div>
       <div id="address" class="section row">
         <h5>Business Address</h5>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessAddress">Address:</label>
           <input type="text" class="form-control" id="businessAddress" v-model="clientData.address" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessAddress2">Address 2:</label>
           <input type="text" class="form-control" id="businessAddress2" v-model="clientData.address2" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessCity">City:</label>
           <input type="text" class="form-control" id="businessCity" v-model="clientData.city" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessState">State:</label>
           <input type="text" class="form-control" id="businessState" v-model="clientData.state" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessZipcode">Zipcode:</label>
           <input type="text" class="form-control" id="businessZipcode" v-model="clientData.zipcode" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="businessCountry">Country:</label>
           <input type="text" class="form-control" id="businessCountry" v-model="clientData.country" :disabled="!isEditing">
         </div>
       </div>
       <div id="contact" class="section row">
         <h5>Business Contact</h5>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="email">Email:</label>
           <input type="email" class="form-control" id="email" v-model="clientData.email" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="phone">Phone:</label>
           <input type="tel" class="form-control" id="phone" v-model="clientData.phone" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="website">Website:</label>
           <input type="tel" class="form-control" id="website" :disabled="!isEditing">
         </div>
       </div>
       <div id="ownerDetails" class="section row">
         <h5>Owner Details</h5>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerFirstName">First Name:</label>
           <input type="text" class="form-control" id="ownerFirstName" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerLastName">Last Name:</label>
           <input type="text" class="form-control" id="ownerLastName" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerLast4SSN">Last 4 SSN:</label>
           <input type="text" class="form-control" id="ownerLast4SSN" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerDOB">Date of Birth:</label>
           <input type="date" class="form-control" id="ownerDOB" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerOwnershipPercentage">Ownership Percentage:</label>
           <input type="text" class="form-control" id="ownerOwnershipPercentage" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerTitle">Title:</label>
           <input type="text" class="form-control" id="ownerTitle" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerPhone">Phone:</label>
           <input type="tel" class="form-control" id="ownerPhone" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerStreetAddress">Street Address:</label>
           <input type="text" class="form-control" id="ownerStreetAddress" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerSuite">Suite:</label>
           <input type="text" class="form-control" id="ownerSuite" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerCity">City:</label>
           <input type="text" class="form-control" id="ownerCity" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerState">State:</label>
           <input type="text" class="form-control" id="ownerState" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="ownerPostalCode">Postal Code:</label>
           <input type="text" class="form-control" id="ownerPostalCode" :disabled="!isEditing">
         </div>
       </div>
       <div id="settlementAccount" class="section row">
         <h5>Settlement/Payout Account</h5>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="accountNumber">Account Number:</label>
           <input type="text" class="form-control" id="accountNumber" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="routingNumber">Routing Number:</label>
           <input type="text" class="form-control" id="routingNumber" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="nameOnAccount">Name On Account:</label>
           <input type="text" class="form-control" id="nameOnAccount" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="accountType">Account Type:</label>
           <select class="form-control" id="accountType" :disabled="!isEditing">
             <option value="">Select Account Type</option>
@@ -259,150 +482,152 @@
             <option value="Business Savings">Business Savings</option>
           </select>
         </div>
-      </div>      
+      </div>
+      <hr>
       <!-- Add to below section: v-if="user.role === 'admin'" -->
-      <div id="processor" class="section row">
-        <h3>Processing</h3>
+      <div id="processing" class="section row">
+        <h3 class="mb-0">Processing</h3>
+        <h5 class="mb-0 mt-2" id="cards">Cards</h5>
         <!-- Add text that says "Not Processing" if the partner is not processing payments as a merchant. -->
-        <div class="form-group col-4">
-            <label for="processorSelect">Processor:</label>
+        <p v-if="clientData.config.payment === 'merchante'">Merchant E IDs should be manually entered when provided upon approval by Merchant E.</p>
+        <p v-if="clientData.config.payment === 'bluesnap'">Bluesnap MID will autopopulate upon approval by Bluesnap.</p>
+        <div class="form-group col-md-4 col-sm-6">
+            <label for="processorSelect">Card Processor:</label>
             <!-- Add to below select:  v-model="clientData.config.payment" :placeholder=clientData.config.payment -->
-            <select class="form-control" id="processorSelect" :disabled="!isEditing">
+            <select class="form-control" id="processorSelect" v-model="clientData.config.payment" :disabled="!isEditing">
                 <option value="FIS">FIS</option>
                 <option value="MerchantE">Merchant E</option>
                 <option value="Bluesnap">Bluesnap</option>
             </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label for="processorMid">{{ clientData.config.payment.toUpperCase() }} Merchant ID:</label>
           <input type="number" class="form-control" id="processorMid" v-model="clientData.mid" :disabled="!isEditing">
         </div>
-        <div class="form-group col-4">
-          <label>Credit Card:</label>
+        <div class="form-group col-md-4 col-sm-6" v-if="clientData.config.payment === 'merchante'">
+          <label for="processorMid">{{ clientData.config.payment.toUpperCase() }} Profile Key:</label>
+          <input type="number" class="form-control" id="processorMid" v-model="clientData.mid" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Card Rate:</label>
           <select class="form-control" :disabled="!isEditing">
             <option value=""></option>
             <option value="2.89">2.89</option>
             <!-- Add more options as needed -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Card Pass-to-Consumer:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <h5 class="mb-0 mt-4" id="ach">ACH</h5>
+        <div class="form-group col-md-4 col-sm-6 ">
           <label>ACH:</label>
           <select class="form-control" :disabled="!isEditing">
             <option value=""></option>
             <!-- Add options here -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
+          <label>ACH Rate:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <option value="2.89">2.89</option>
+            <!-- Add more options as needed -->
+          </select>
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>ACH Pass-to-Consumer:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <h5 class="mb-0 mt-4" id="crypto">Crypto</h5>
+        <div class="form-group col-md-4 col-sm-6">
           <label>Crypto:</label>
           <select class="form-control" :disabled="!isEditing">
             <option value=""></option>
             <!-- Add options here -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Crypto Rate:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <option value="2.89">2.89</option>
+            <!-- Add more options as needed -->
+          </select>
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Crypto Pass-to-Consumer:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <h5 class="mb-0 mt-4" id="terminals">Terminals</h5>
+        <div class="form-group col-md-4 col-sm-6">
           <label>Terminals:</label>
           <select class="form-control" :disabled="!isEditing">
             <option value=""></option>
             <!-- Add options here -->
           </select>
         </div>
-        <div class="form-group col-4">
-          <label>Card p2c:</label>
-          <select class="form-control" :disabled="!isEditing">
-            <option value=""></option>
-            <!-- Add options here -->
-          </select>
-        </div>
-        <div class="form-group col-4">
-          <label>ACH p2c:</label>
-          <select class="form-control" :disabled="!isEditing">
-            <option value=""></option>
-            <!-- Add options here -->
-          </select>
-        </div>
-        <div class="form-group col-4">
-          <label>Crypto p2c:</label>
-          <select class="form-control" :disabled="!isEditing">
-            <option value=""></option>
-            <!-- Add options here -->
-          </select>
-        </div>
-        <div class="form-group col-4">
+        <h5 class="mb-0 mt-4" id="addtnl">Processing Settings & Additional Fees</h5>
+        <div class="form-group col-md-4 col-sm-6">
           <label>Settlement:</label>
-          <select class="form-control" :disabled="!isEditing">
-            <option value=""></option>
+          <select class="form-control" v-model="clientData.config.payout" :disabled="!isEditing">
+            <option value="split_settlement">Split Settlement</option>
             <!-- Add options here -->
           </select>
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label>MCC code:</label>
           <select class="form-control" :disabled="!isEditing">
             <option value=""></option>
             <!-- Add options here -->
           </select>
         </div>
-        <div class="form-group col-4">
-          <label>MCC code:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Card:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Crypto:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Bank:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Average ticket:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Early Termination Fee:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Low Rate Fee:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Parent rev share, %:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Balance Due to TPP:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Client Rate:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Client Balance:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
-          <label>Auto onboard:</label>
-          <input type="text" class="form-control" :disabled="!isEditing">
-        </div>
-        <div class="form-group col-4">
+        <div class="form-group col-md-4 col-sm-6">
           <label>High ticket:</label>
           <input type="text" class="form-control" :disabled="!isEditing">
         </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Average ticket:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Early Termination Fee:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Low Rate Fee:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-md-4 col-sm-6">
+          <label>Balance Due Before Payout:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
       </div>
-      <div id="childSettings" class="section">
-        <div id="childSettings" class="section" v-if="clientData.level === 'Parent'">
-          <h3>Submerchant/Child Settings</h3>
-          <h5 id="links">Links</h5>
+      <hr>
+      <div id="subSettings" class="section">
+        <div class="section" v-if="clientData.level === 'Parent'">
+          <h3 class="mb-0">Submerchant Settings</h3>
+          <p class="mt-0">Submerchant (child) accounts will inherit the below settings, rates, and fees.</p>
+          <h5 id="enroll">Enrollment</h5>
           <div class="enroll-link">
-            <label class="bold">Submerchant Enrollment Link:</label>
+            <label class="bold">Link to Enroll Submerchants:</label>
             <!--Insert below for deployment: <span>{{ `${window.location.href}/agent/${clientData.hashcode}` }}</span> -->
             <span>tripleplaypay.com/agent/{{ clientData.hashcode }}</span>
-            <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+            <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(agentLink)">Copy</button>
+          </div>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Auto onboard:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
           </div>
           <h5 id="subpricing">Subpricing</h5>
           <a href="https://tripleplaypay.com/reports/subpricing" class="d-block mb-3">Go to Admin Subpricing Settings Page ></a>
@@ -437,121 +662,86 @@
             </tbody>
           </table>
         </div>
-        <div class="section row">
-          <h5 id="childProcessing">Child Processing</h5>
-          <div class="form-group col-4">
-            <label>Credit Card:</label>
+        <div class="section row" v-if="clientData.level === 'Parent'">
+          <h5 id="subProcessing">Submerchant Processing</h5>
+          <h5 class="mb-0 mt-2">Cards</h5>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Card Rate:</label>
             <select class="form-control" :disabled="!isEditing">
               <option value=""></option>
-              <!-- Add options -->
+              <option value="2.89">2.89</option>
+              <!-- Add more options as needed -->
             </select>
           </div>
-          <div class="form-group col-4">
-            <label>ACH:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
-              <!-- Add options here -->
-            </select>
-          </div>
-          <div class="form-group col-4">
-            <label>Crypto:</label>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Card Pass-to-Consumer:</label>
             <select class="form-control" :disabled="!isEditing">
               <option value=""></option>
               <!-- Add options here -->
             </select>
           </div>
-          <div class="form-group col-4">
+          <h5 class="mb-0 mt-4">ACH</h5>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>ACH Rate:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <option value="2.89">2.89</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>ACH Pass-to-Consumer:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <h5 class="mb-0 mt-4">Crypto</h5>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Crypto Rate:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <option value="2.89">2.89</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Crypto Pass-to-Consumer:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <h5 class="mb-0 mt-4">Terminals</h5>
+          <div class="form-group col-md-4 col-sm-6">
             <label>Terminals:</label>
             <select class="form-control" :disabled="!isEditing">
               <option value=""></option>
               <!-- Add options here -->
             </select>
           </div>
-          <div class="form-group col-4">
-            <label>Card p2c:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
-              <!-- Add options here -->
-            </select>
-          </div>
-          <div class="form-group col-4">
-            <label>ACH p2c:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
-              <!-- Add options here -->
-            </select>
-          </div>
-          <div class="form-group col-4">
-            <label>Crypto p2c:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
-              <!-- Add options here -->
-            </select>
-          </div>
-          <div class="form-group col-4">
+          <h5 class="mb-0 mt-4">Processing Settings & Additional Fees</h5>
+          <div class="form-group col-md-4 col-sm-6">
             <label>Settlement:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
+            <select class="form-control" v-model="clientData.config.payout" :disabled="!isEditing">
+              <option value="split_settlement">Split Settlement</option>
               <!-- Add options here -->
             </select>
           </div>
-          <div class="form-group col-4">
-            <label>MCC code:</label>
-            <select class="form-control" :disabled="!isEditing">
-              <option value=""></option>
-              <!-- Add options here -->
-            </select>
-          </div>
-          <div class="form-group col-4">
-            <label>MCC code:</label>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Revenue Share to Parent:</label>
             <input type="text" class="form-control" :disabled="!isEditing">
           </div>
-          <div class="form-group col-4">
-            <label>Card:</label>
+          <div class="form-group col-md-4 col-sm-6">
+            <label>Balance Due Before Rev. Share Payout:</label>
             <input type="text" class="form-control" :disabled="!isEditing">
           </div>
-          <div class="form-group col-4">
-            <label>Crypto:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Bank:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Average ticket:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
+          <div class="form-group col-md-4 col-sm-6">
             <label>Early Termination Fee:</label>
             <input type="text" class="form-control" :disabled="!isEditing">
           </div>
-          <div class="form-group col-4">
+          <div class="form-group col-md-4 col-sm-6">
             <label>Low Rate Fee:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Parent rev share, %:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Balance Due to TPP:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Client Rate:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Client Balance:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>Auto onboard:</label>
-            <input type="text" class="form-control" :disabled="!isEditing">
-          </div>
-          <div class="form-group col-4">
-            <label>High ticket:</label>
             <input type="text" class="form-control" :disabled="!isEditing">
           </div>
         </div>
@@ -672,7 +862,7 @@ let mockClientData = {
     devices: "5",
     enabled: false,
     onboard: false,
-    payment: "",
+    payment: "merchante",
     velocity: "100",
     terminals: "",
     avg_ticket: "250",
@@ -816,7 +1006,11 @@ const app = new Vue({
   data: {
     clientData: { ...mockClientData },
     isEditing: false,
+    showCtaLink: false,
+    showId: false,
+    showHash: false,
     ctaLink: `${window.location.origin}/enroll/${mockClientData.id}`,
+    agentLink: `${window.location.origin}/agent/${mockClientData.hashcode}`
   },
   methods: {
     editClient() {
@@ -860,7 +1054,12 @@ h3 {
 }
 
 h5 {
-  margin-top: 15px;
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+p {
+  margin-bottom: 0;
 }
 
 .form-group {
@@ -904,6 +1103,19 @@ h5 {
 .save-btn {
   width: 70px;
   margin: 7px 0;
+}
+
+.side-sub {
+  margin-top: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.small {
+  color: gray;
+  font-size: 14px;
+  line-height: 110%;
+  margin-bottom: 10px;
 }
 
 </style>
