@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles.css">
-  <title>Client Details</title>
+  <title>Account Details</title>
 </head>
 <body>
+<div id="clientDetails">
   <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top">
     <div class="container-fluid">
-      <h3>{{ clientData.name }}</h3>
+      <h3 class="me-4">{{ clientData.name }}</h3>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -35,12 +35,11 @@
           </li>
         </ul>
       </div>
-      <div class="control-btns d-flex gap-2" v-if="!isEditing">
+      <div class="control-btns d-flex gap-2">
         <button id="editBtn" class="btn btn-primary">Edit</button>
-        <button id="closeBtn" class="btn btn-primary">Close</button>
+        <button id="closeBtn" class="btn btn-primary">Back to Clients</button>
       </div>
-      <!-- Set below buttons to display none and create JS for making them block when Edit is clicked -->
-      <div class="complete-btns d-flex row align-items-center" v-if="isEditing">
+      <div class="complete-btns d-flex row align-items-center">
         <button id="cancelBtn" class="btn cancel-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -53,243 +52,732 @@
       </div>
     </div>
   </nav>
-    <div class="container mt-5">
-      <h3>Account Details</h3>
-      <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
-      <div class="row">
-          <div class="col pt-2">
-              <div class="fz-14">
-              <span>Level: {{ clientData.level }} |</span>
-              <span> Parent: {{ clientData.parent.name }} |</span>
-              <span> Last activity: x.xx.xxxx |</span>
-              <span> Production Api key: {{ clientData.enabled }} </span>
-              </div>
-          </div>
-      </div>
-      <div id="clientDetails" class="mt-3">
-        <div id="keys" class="section">
-          <h5>Keys & IDs</h5>
-          <div class="api-keys">
-            <!-- Add to below div: v-if="user.role === 'admin'" -->
-            <div class="acct-id">
-              <label>Account ID:</label>
-              <div class="acct-id">
-                <span>{{ clientData.id }}</span>
-                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
-              </div>
+  <div class="container mt-5">
+    <h3>Onboarding Data</h3>
+    <!-- Add to below div: v-if="user.role === 'partner' | 'admin'" -->
+    <div class="row">
+        <div class="col pt-2">
+            <div class="fz-14">
+            <span>Level: {{ clientData.level }} |</span>
+            <span> Parent: {{ clientData.parent.name }} |</span>
+            <span> Last activity: x.xx.xxxx</span>
             </div>
-            <div class="key">
-              <label>Master API Key:</label>
-              <div class="key-value">
-                <span>{{ clientData.iframekey }}</span>
-                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
-              </div>
-            </div>
-            <div class="key">
-              <label>Master Iframe Key:</label>
-              <div class="key-value">
-                <span>{{ clientData.iframekey }}</span>
-                <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
-              </div>
-            </div>
-            <!-- Add more API keys here as needed -->
-          </div>
-          <button class="btn btn-primary">Add Dedicated API Key</button>
         </div>
-        <!-- Add to below section: v-if="user.role === 'partner' | 'admin'" -->
-        <div id="businessDetails" class="section">
-          <h5>Business Information</h5>
-          <div class="form-group">
-            <label for="name">Legal Name:</label>
-            <input type="text" class="form-control" id="name" v-model="clientData.billing.legal_name" :disabled="!isEditing">
+    </div>
+    <div class="mt-3">
+      <div id="keys" class="section">
+        <h5>IDs & Links</h5>
+        <div class="acct-id">
+          <label>Onboarding ID:</label>
+          <span>{{ clientData.id }}</span>
+          <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
+        </div>
+        <div class="cta-link">
+          <label>CTA Link:</label>
+          <span>{{ ctaLink }}</span>
+          <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(ctaLink)">Copy</button>
+        </div>
+      </div>
+      <!-- Add to below section: v-if="user.role === 'partner' | 'admin'" -->
+      <div id="businessDetails" class="section row">
+        <h5>Business Information</h5>
+        <div class="form-group col-4">
+          <label for="name">Legal Name:</label>
+          <input type="text" class="form-control" id="name" v-model="clientData.billing.legal_name" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="name">DBA:</label>
+          <input type="text" class="form-control" id="name" v-model="clientData.billing.dba_name" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownershipType">Business Structure:</label>
+          <select class="form-control" id="ownershipType" v-model="clientData.billing.ownershipType" :disabled="!isEditing">
+            <!-- Options for businessTypes dropdown can be added here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label for="taxid">Tax ID:</label>
+          <input type="text" class="form-control" id="taxid" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="timezone">Timezone:</label>
+          <select class="form-control" id="timezone" v-model="clientData.tz" :disabled="!isEditing">
+            <!-- Options for timezone dropdown can be added here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label for="businessDetails">Description of Activities:</label>
+          <input type="text" class="form-control" id="businessDetails" :disabled="!isEditing">
+        </div>
+      </div>
+      <div id="address" class="section row">
+        <h5>Address</h5>
+        <div class="form-group col-4">
+          <label for="businessAddress">Address:</label>
+          <input type="text" class="form-control" id="businessAddress" v-model="clientData.address" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="businessAddress2">Address 2:</label>
+          <input type="text" class="form-control" id="businessAddress2" v-model="clientData.address2" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="businessCity">City:</label>
+          <input type="text" class="form-control" id="businessCity" v-model="clientData.city" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="businessState">State:</label>
+          <input type="text" class="form-control" id="businessState" v-model="clientData.state" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="businessZipcode">Zipcode:</label>
+          <input type="text" class="form-control" id="businessZipcode" v-model="clientData.zipcode" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="businessCountry">Country:</label>
+          <input type="text" class="form-control" id="businessCountry" v-model="clientData.country" :disabled="!isEditing">
+        </div>
+      </div>
+      <div id="contact" class="section row">
+        <h5>Business Contact</h5>
+        <div class="form-group col-4">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" v-model="clientData.email" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="phone">Phone:</label>
+          <input type="tel" class="form-control" id="phone" v-model="clientData.phone" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="website">Website:</label>
+          <input type="tel" class="form-control" id="website" :disabled="!isEditing">
+        </div>
+      </div>
+      <div id="ownerDetails" class="section row">
+        <h5>Owner Details</h5>
+        <div class="form-group col-4">
+          <label for="ownerFirstName">First Name:</label>
+          <input type="text" class="form-control" id="ownerFirstName" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerLastName">Last Name:</label>
+          <input type="text" class="form-control" id="ownerLastName" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerLast4SSN">Last 4 SSN:</label>
+          <input type="text" class="form-control" id="ownerLast4SSN" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerDOB">Date of Birth:</label>
+          <input type="date" class="form-control" id="ownerDOB" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerOwnershipPercentage">Ownership Percentage:</label>
+          <input type="text" class="form-control" id="ownerOwnershipPercentage" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerTitle">Title:</label>
+          <input type="text" class="form-control" id="ownerTitle" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerPhone">Phone:</label>
+          <input type="tel" class="form-control" id="ownerPhone" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerStreetAddress">Street Address:</label>
+          <input type="text" class="form-control" id="ownerStreetAddress" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerSuite">Suite:</label>
+          <input type="text" class="form-control" id="ownerSuite" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerCity">City:</label>
+          <input type="text" class="form-control" id="ownerCity" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerState">State:</label>
+          <input type="text" class="form-control" id="ownerState" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="ownerPostalCode">Postal Code:</label>
+          <input type="text" class="form-control" id="ownerPostalCode" :disabled="!isEditing">
+        </div>
+      </div>
+      <div id="settlementAccount" class="section row">
+        <h5>Settlement/Payout Account</h5>
+        <div class="form-group col-4">
+          <label for="accountNumber">Account Number:</label>
+          <input type="text" class="form-control" id="accountNumber" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="routingNumber">Routing Number:</label>
+          <input type="text" class="form-control" id="routingNumber" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="nameOnAccount">Name On Account:</label>
+          <input type="text" class="form-control" id="nameOnAccount" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label for="accountType">Account Type:</label>
+          <select class="form-control" id="accountType" :disabled="!isEditing">
+            <option value="">Select Account Type</option>
+            <option value="Checking">Checking</option>
+            <option value="Savings">Savings</option>
+            <option value="Business Checking">Business Checking</option>
+            <option value="Business Savings">Business Savings</option>
+          </select>
+        </div>
+      </div>      
+      <!-- Add to below section: v-if="user.role === 'admin'" -->
+      <div id="processor" class="section row">
+        <h3>Processing</h3>
+        <!-- Add text that says "Not Processing" if the partner is not processing payments as a merchant. -->
+        <div class="form-group col-4">
+            <label for="processorSelect">Processor:</label>
+            <!-- Add to below select:  v-model="clientData.config.payment" :placeholder=clientData.config.payment -->
+            <select class="form-control" id="processorSelect" :disabled="!isEditing">
+                <option value="FIS">FIS</option>
+                <option value="MerchantE">Merchant E</option>
+                <option value="Bluesnap">Bluesnap</option>
+            </select>
+        </div>
+        <div class="form-group col-4">
+          <label for="processorMid">{{ clientData.config.payment.toUpperCase() }} Merchant ID:</label>
+          <input type="number" class="form-control" id="processorMid" v-model="clientData.mid" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Credit Card:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <option value="2.89">2.89</option>
+            <!-- Add more options as needed -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>ACH:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>Crypto:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>Terminals:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>Card p2c:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>ACH p2c:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>Crypto p2c:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>Settlement:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>MCC code:</label>
+          <select class="form-control" :disabled="!isEditing">
+            <option value=""></option>
+            <!-- Add options here -->
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label>MCC code:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Card:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Crypto:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Bank:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Average ticket:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Early Termination Fee:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Low Rate Fee:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Parent rev share, %:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Balance Due to TPP:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Client Rate:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Client Balance:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>Auto onboard:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+        <div class="form-group col-4">
+          <label>High ticket:</label>
+          <input type="text" class="form-control" :disabled="!isEditing">
+        </div>
+      </div>
+      <div id="childSettings" class="section">
+        <div id="childSettings" class="section" v-if="clientData.level === 'Parent'">
+          <h3>Submerchant/Child Settings</h3>
+          <h5>Links</h5>
+          <div class="enroll-link">
+            <label class="bold">Submerchant Enrollment Link:</label>
+            <!--Insert below for deployment: <span>{{ `${window.location.href}/agent/${clientData.hashcode}` }}</span> -->
+            <span>tripleplaypay.com/agent/{{ clientData.hashcode }}</span>
+            <button class="btn btn-sm btn-secondary copy-button" @click="copyToClipboard(clientData.iframekey)">Copy</button>
           </div>
-          <div class="form-group">
-            <label for="name">DBA:</label>
-            <input type="text" class="form-control" id="name" v-model="clientData.billing.dba_name" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" v-model="clientData.email" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone:</label>
-            <input type="tel" class="form-control" id="phone" v-model="clientData.phone" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="logo">Logo:</label>
-            <div class="input-group">
-              <input type="text" class="form-control" id="logo" v-model="clientData.logo" :disabled="!isEditing">
-              <button class="btn btn-secondary" type="button" :disabled="!isEditing">Upload</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="timezone">Timezone:</label>
-            <select class="form-control" id="timezone" v-model="clientData.tz" :disabled="!isEditing">
-              <!-- Options for timezone dropdown can be added here -->
+          <h5>Subpricing</h5>
+          <a href="https://tripleplaypay.com/reports/subpricing" class="d-block mb-3">Go to Admin Subpricing Settings Page ></a>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>MCC Code</th>
+                <th>Card Rate</th>
+                <th>ACH Rate</th>
+                <th>Crypto Rate</th>
+                <th>Card P2C</th>
+                <th>ACH P2C</th>
+                <th>Crypto P2C</th>
+                <th>Avg Ticket</th>
+                <th>High Ticket</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="subprice in clientData.subpricing" :key="subprice.label">
+                <td>{{ subprice.label }}</td>
+                <td>{{ subprice.mccCode }}</td>
+                <td>{{ subprice.card_rate }}</td>
+                <td>{{ subprice.ach_rate }}</td>
+                <td>{{ subprice.crypto_rate }}</td>
+                <td>{{ subprice.card_p2c }}</td>
+                <td>{{ subprice.ach_p2c }}</td>
+                <td>{{ subprice.crypto_p2c }}</td>
+                <td>{{ subprice.avg_ticket }}</td>
+                <td>{{ subprice.high_ticket }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="section row">
+          <h5>Child Processing</h5>
+          <div class="form-group col-4">
+            <label>Credit Card:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <option value="2.89">2.89</option>
+              <!-- Add more options as needed -->
             </select>
           </div>
+          <div class="form-group col-4">
+            <label>ACH:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>Crypto:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>Terminals:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>Card p2c:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>ACH p2c:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>Crypto p2c:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>Settlement:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>MCC code:</label>
+            <select class="form-control" :disabled="!isEditing">
+              <option value=""></option>
+              <!-- Add options here -->
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label>MCC code:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Card:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Crypto:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Bank:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Average ticket:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Early Termination Fee:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Low Rate Fee:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Parent rev share, %:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Balance Due to TPP:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Client Rate:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Client Balance:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>Auto onboard:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
+          <div class="form-group col-4">
+            <label>High ticket:</label>
+            <input type="text" class="form-control" :disabled="!isEditing">
+          </div>
         </div>
-        <div id="address" class="section">
-          <h5>Address</h5>
-          <div class="form-group">
-            <label for="businessAddress">Address:</label>
-            <input type="text" class="form-control" id="businessAddress" v-model="clientData.address" :disabled="!isEditing">
+        <div id="whiteLabel" class="section" v-if="clientData.level === 'Parent'">
+          <h5>Whitelabel</h5>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="logo">Logo:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="logo" v-model="clientData.logo" :disabled="!isEditing">
+                  <button class="btn btn-secondary" type="button" :disabled="!isEditing">Upload</button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column justify-content-start mt-3">
+              <p class="mb-0">Color:</p>
+              <p class="mt-0 mb-1">This selected color will become the default for the portal, virtual terminal, and email communications.</p>
+              <div class="form-group col-2 mt-0">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="customColorSwitch" v-model="useCustomColor" :disabled="!isEditing">
+                  <label class="form-check-label ml-2" for="customColorSwitch">{{ useCustomColor ? 'Use Custom Color' : 'Use Default' }}</label>
+                </div>
+              </div>
+              <!-- This input below only needs to show if the toggle is on above -->
+              <div class="form-group col-2">
+                <label>Enter Hex Code:</label>
+                <input type="text" class="form-control" :disabled="!useCustomColor | !isEditing">
+              </div>
+            </div>           
           </div>
-          <div class="form-group">
-            <label for="businessAddress2">Address 2:</label>
-            <input type="text" class="form-control" id="businessAddress2" v-model="clientData.address2" :disabled="!isEditing">
+          <div class="mt-4">
+            <h6>Welcome Email to Merchants</h6>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" :disabled="!isEditing">
+              <label class="form-check-label">No Email</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" :disabled="!isEditing">
+              <label class="form-check-label">Default</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" :disabled="!isEditing">
+              <label class="form-check-label">Custom</label>
+            </div>
+            <div class="mt-3">
+              <label>Message:</label>
+              <textarea class="form-control" rows="3" :disabled="!isEditing"></textarea>
+            </div>
+            <div class="mt-3">
+              <label>Contact Details:</label>
+              <input type="text" class="form-control" :disabled="!isEditing">
+            </div>
+            <div class="form-check mt-3">
+              <input type="checkbox" class="form-check-input" :disabled="!isEditing">
+              <label class="form-check-label">Include Link to Virtual Terminal</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" :disabled="!isEditing">
+              <label class="form-check-label">Include API Key</label>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="businessCity">City:</label>
-            <input type="text" class="form-control" id="businessCity" v-model="clientData.city" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="businessState">State:</label>
-            <input type="text" class="form-control" id="businessState" v-model="clientData.state" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="businessZipcode">Zipcode:</label>
-            <input type="text" class="form-control" id="businessZipcode" v-model="clientData.zipcode" :disabled="!isEditing">
-          </div>
-          <div class="form-group">
-            <label for="businessCountry">Country:</label>
-            <input type="text" class="form-control" id="businessCountry" v-model="clientData.country" :disabled="!isEditing">
-          </div>
-        </div>
-        
-        <!-- Add to below section: v-if="user.role === 'admin'" -->
-        <div id="processor" class="section">
-          <h3>Processing</h3>
-          <div class="form-group">
-              <label for="processorSelect">Processor:</label>
-              <!-- Add to below select:  v-model="clientData.config.payment" :placeholder=clientData.config.payment -->
-              <select class="form-control" id="processorSelect" :disabled="!isEditing">
-                  <option value="FIS">FIS</option>
-                  <option value="MerchantE">Merchant E</option>
-                  <option value="Bluesnap">Bluesnap</option>
-              </select>
-          </div>
-          <div class="form-group">
-            <label for="processorMid">{{ clientData.config.payment.toUpperCase() }} Merchant ID:</label>
-            <input type="number" class="form-control" id="processorMid" v-model="clientData.mid" :disabled="!isEditing">
-          </div>  
-          <div class="form-group">
-              <label for="cardRate">Card Rate:</label>
-              <input type="number" class="form-control" id="cardRate" v-model="clientData.pricing.card_rate" :disabled="!isEditing">
+          <div class="mt-4">
+            <h6>SMTP</h6>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>TLS:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.tls" :disabled="!isEditing">
+                </div>
+                <div class="form-group">
+                  <label>Host:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.host" :disabled="!isEditing">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Auth:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.auth" :disabled="!isEditing">
+                </div>
+                <div class="form-group">
+                  <label>Port:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.port" :disabled="!isEditing">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Password:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.password" :disabled="!isEditing">
+                </div>
+                <div class="form-group">
+                  <label>Username:</label>
+                  <input type="text" class="form-control" v-model="clientData.whitelabel.smtp.username" :disabled="!isEditing">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 
 <script>
 // Mock data (replace this with actual API calls)
 let mockClientData = {
-  status: true,
-  id: "4a731b24-0beb-457c-9585-2362c6a53cf5",
-  message: {
-    hashcode: "TRIPLE",
+  id: "fca9c683-27ed-42ac-9919-c57c2c223374",
+  tags: { },
+  mode: "PROD",
+  config: {
+    ach: false,
+    ccs: 3,
+    smtp: { },
+    crypto: "curpay",
+    payout: "split_settlement",
+    devices: "5",
+    enabled: false,
+    onboard: false,
+    payment: "",
+    velocity: "100",
+    terminals: "",
+    avg_ticket: "250",
+    high_ticket: "10000",
+    enroll_email: true,
+    transactions: "5",
+    settle: false,
+  },
+  pricing: {
+    ach: "",
+    etf: "500",
+    card: "2.89",
+    crypto: "",
+    ach_p2c: false,
+    balance: 0,
+    ach_rate: "",
+    card_p2c: false,
+    low_rate: "0+0",
+    tax_rate: "0.00",
+    card_rate: "",
+    rev_share: 50,
+    crypto_p2c: false,
+    client_rate: 0,
+    crypto_rate: "",
+    client_balance: ""
+  },
+  parent: {
+    id: "4a731b24-0beb-457c-9585-2362c6a53cf5",
     name: "TriplePlayPay",
-    logo: "/static/images/LogoIcon.png",
-    timezone: "US/Central",
-    email: "cto@tripleplaypay.com",
-    callback: "",
-    pricing: {
-      etf: "500",
-      ach_p2c: false,
-      balance: 0,
-      ach_rate: ".20",
-      card_p2c: false,
-      low_rate: "0+0",
-      tax_rate: "0.00",
+    hashcode: "TRIPLE"
+  },
+  billing: {
+    mccCode: "7372",
+    dba_name: "CURPAY PRIMARY",
+    legal_name: "CurPay",
+    start_date: "2020-12-08",
+    businessType: "ECommerce",
+    ownershipType: "PrivateCorporation",
+    billing_descriptor: "SIM*CURPAY PRIMARY"
+  },
+  subpricing: [
+    {
+      label: "DEFAULT",
+      mccCode: "",
       card_rate: "2.89",
-      rev_share: 50,
-      crypto_p2c: false,
-      client_rate: 0,
+      ach_rate: "1.0",
       crypto_rate: "1.99+5",
-      client_balance: ""
+      card_p2c: "",
+      ach_p2c: "",
+      crypto_p2c: "",
+      avg_ticket: "",
+      high_ticket: "10000"
+    }
+  ],
+  child: {
+    ach: "1.00",
+    ccs: 3,
+    smtp: { },
+    crypto: "1.99+5",
+    devices: "5",
+    mccCode: "7372",
+    pricing: "2.89",
+    velocity: "100",
+    avg_ticket: "250",
+    high_ticket: "5000",
+    enroll_email: true,
+    transactions: "5"
+  },
+  whitelabel: {
+    isDone: true,
+    smtp: {
+          tls: null,
+          auth: null,
+          host: null,
+          port: null,
+          password: null,
+          username: null
+        },
+    w_email: false,
+    color: "black"
+  },
+  name: "CURPAY PRIMARY",
+  city: "Jackson",
+  address: "680 S Cache St. Suite 100",
+  address2: "",
+  state: "WY",
+  logo: "/static/images/LogoIcon.png",
+  zipcode: "83001",
+  tz: "US/Central",
+  country: "US",
+  approvedby: "",
+  iframekey: "a74075c3-ce58-4fed-ab1a-837c86c896fa",
+  level: "Parent",
+  email: "info@curpay.net",
+  phone: "2247306107",
+  fee: {
+    pci: {
+      amount: "15.00",
+      end: "2999-01-01",
+      interval: "monthly"
     },
-    config: {
-      ach: "xpress",
-      ccs: 3,
-      crypto: "curpay",
-      enroll: true,
-      payout: "split_settlment",
-      timing: 60,
-      devices: 5,
-      enabled: true,
-      onboard: false,
-      payment: "fis",
-      velocity: 100,
-      terminals: "dejavooo",
-      whitelabel: {
-        isDone: true,
-        notifications: {
-          transactions: {
-            fraudulent: {
-              isActive: true
-            },
-            receiptForApproved: {
-              isActive: true
-            },
-            transactionGreater: {
-              amount: null,
-              isActive: true
-            }
-          },
-          merchantConfig: {
-            smtp: {
-              tls: null,
-              auth: null,
-              host: null,
-              port: null,
-              password: null,
-              username: null
-            },
-            emails: {
-              fraudulent: {
-                isActive: false
-              },
-              receiptForApproved: {
-                isActive: true
-              },
-              transactionGreater: {
-                amount: null,
-                isActive: true
-              }
-            },
-            recipients: [ ]
-          }
-        }
-      },
-      high_ticket: 10000,
-      enroll_email: false,
-      transactions: 5,
-      pause_settlement: false
+    etf: {
+      amount: "199.00",
+      end: "2999-01-01",
+      interval: "event"
     },
-    wallet: [
-      "TRIPLE-BANK:*"
-    ],
-    fee: {
-      pci: {
-        amount: "15.00",
-        end: "2999-01-01",
-        interval: "monthly"
-      },
-      etf: {
-        amount: "199.00",
-        end: "2999-01-01",
-        interval: "event"
-      },
-      chargeback: {
-        amount: "15.00",
-        end: "2999-01-01",
-        interval: "event"
-      }
-    },
-    level: "Parent"
-  }
+    chargeback: {
+      amount: "15.00",
+      end: "2999-01-01",
+      interval: "event"
+    }
+  },
+  callback: null,
+  primary_userid: "",
+  statement_note: "",
+  hashcode: "3FNiVB",
+  dejavoo: { },
+  lanes: { },
+  balance: 0,
+  client_balance: 0,
+  keystore: {
+    b_id: "|",
+    tsys: "",
+    m_key: "",
+    m_mid: "",
+    m_pid: "",
+    xpress: "",
+    curpayid: ""
+  },
+  month: "1",
+  primary: "CurpayV2",
+  low_rate: "232",
+  bank_rate: "2.21a3",
+  card_rate: "2.89",
+  crypto_rate: "2.21a",
+  terminals: { }
 }
 
 const app = new Vue({
@@ -297,6 +785,7 @@ const app = new Vue({
   data: {
     clientData: { ...mockClientData },
     isEditing: false,
+    ctaLink: `${window.location.origin}/enroll/${mockClientData.id}`,
   },
   methods: {
     editClient() {
@@ -332,11 +821,19 @@ const app = new Vue({
 </body>
 <style>
 .section {
+  margin-top: 20px;
+}
+
+h3 {
+  margin-top: 25px;
+}
+
+h5 {
   margin-top: 15px;
 }
 
 .form-group {
-  margin-top: 5px;
+  margin-top: 15px;
 }
 
 .complete-btns {
