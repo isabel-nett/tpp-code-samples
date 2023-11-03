@@ -163,7 +163,7 @@
       try {
         // Construct the URL with params
         const asBase64 = btoa(payload);
-        // Set up for our sandbox environment (utilizing the sandbox URL)
+        // Set up for our sandbox environment (utilizing the sandbox URL). Simply replace "sandbox" with "www" for production use.
         const url = `https://sandbox.tripleplaypay.com/iframe/payment?params=${asBase64}`;
   
         // Open the iframe in a new page with the constructed URL

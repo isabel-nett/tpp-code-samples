@@ -31,6 +31,44 @@
                     <a class="nav-link" href="#">Risk</a>
                     </li>
                 </ul>
+                <div class="btn-group dropup">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Logged in as {{ userFirstName || userEmail }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <!-- User info -->
+                        <p v-if="userFirstName && userEmail" class="logged-in-text" style="font-size: 12px; margin: 0px 5px;">
+                            {{ userEmail }}
+                        </p>
+                        <p class="logged-in-text" style="font-size: 12px; margin: 0px 5px;">
+                            Role: {{ userType }}
+                        </p>
+                        <p class="logged-in-text" style="font-size: 12px; margin: 0px 5px;">
+                            {{ clientNames }}
+                        </p>
+                        <hr>
+                        <!-- Sandbox tour -->
+                        <li class="dropdown-item">
+                            <a id="sTour" href="" style="text-decoration: none; color: inherit;">Sandbox Tour</a>
+                        </li>
+                        <!-- Partner production tour -->
+                        <li class="dropdown-item">
+                            <a id="pTour" href="" style="text-decoration: none; color: inherit;">Website Tour</a>
+                        </li>
+                        <!-- Merchant Production tour -->
+                        <li class="dropdown-item">
+                            <a id="mTour" href="" style="text-decoration: none; color: inherit;">Website Tour</a>
+                        </li>
+                        <!-- Sandbox button -->
+                        <li class="dropdown-item">
+                            <a href="sandbox.tripleplaypay.com/app/login" style="text-decoration: none; color: inherit;">Open Developer Sandbox</a>
+                        </li>
+                        <!-- Logout button -->
+                        <li class="dropdown-item">
+                            <a href="/logout"  style="text-decoration: none; color: inherit;">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -90,8 +128,40 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <div style="width: 100%; height: 30%">
+        
+    </div>
+
+    
+
+
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+    const myCarouselElement = document.querySelector('#sTourCarousel')
+
+    const carousel = new bootstrap.Carousel(sTourCarousel, {
+    touch: false
+    })
+    // Listen for the click event on the "Sandbox Tour" link
+    document.getElementById('sTour').addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent the default link behavior (navigation)
+        $('#sTourCarousel').carousel(0); // Trigger the "Sandbox Tour" carousel to slide to the first slide (index 0)
+    });
+
+    // Listen for the click event on the "Merchant Tour" link
+    document.getElementById('mTour').addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent the default link behavior (navigation)
+        $('#mTourCarousel').carousel(0); // Trigger the "Merchant Tour" carousel to slide to the first slide (index 0)
+    });
+
+    // Listen for the click event on the "Partner Tour" link
+    document.getElementById('pTour').addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent the default link behavior (navigation)
+        $('#pTourCarousel').carousel(0); // Trigger the "Partner Tour" carousel to slide to the first slide (index 0)
+    });
+</script>
 
 </html>
 
