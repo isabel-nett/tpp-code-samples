@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://sandbox.tripleplaypay.com/static/js/sandbox.js"></script>
+</head>
+<body>
+    <div id="iFrame" class="w-100 h-100"></div>
+</body>
+<script>
+    const options = {
+        containerSelector: '#iFrame',
+        amount: 2.00,
+        paymentOptions: ['credit_card'],
+        showEmail: true,
+        emailOption: "required",
+        tokenMode: false,
+        address: false,
+        fullName: false,
+        meta: '',
+        styles: {
+        // button styling
+        button: {
+            // Color
+            color: '#fff',
+            // Background
+            background: 'rgb(248, 150, 31)',
+            // Border radius
+            borderRadius: '15px',
+            // Font size
+            fontSize: '16px',
+            // Handle :active pseudo class
+            active: {
+                // Change color on active state
+                color: '#eef7e9',
+                // Change background on active state
+                background: 'rgb(70, 83, 130)',
+            },
+            // Handle :hover pseudo class
+            hover: {
+                color: '#eef7e9',
+                background: 'rgb(70, 83, 130)',
+            },
+        },
+        input: {
+            color: 'black',
+            background: 'white',
+            borderRadius: '5px',
+            borderColor: 'lightgray',
+            borderWidth: '1px',
+            height: '40px',
+            fontSize: '16px',
+            fontWeight: '300',
+            // Handle focus pseudo class
+            focus: {
+                borderColor: '#F89720',
+                background: 'white',
+                color: 'gray',
+            },
+            // Handle error state (when input contains incorrect data)
+            error: {
+                borderColor: '#cf6565',
+                background: 'white',
+                color: '#bfbfbf',
+            },
+            // Placeholder style
+            placeholder: {
+                color: 'gray',
+                fontSize: '16px',
+                fontWeight: '300',
+            },
+            // Error text style (text below input in error state)
+            errorText: {
+                color: 'red',
+                fontSize: '12px',
+                fontWeight: '500',
+            },
+        },
+    },
+    onError: (errorData) => {
+        console.log('Error');
+        console.log(errorData);
+    },
+    onSuccess: (data) => {
+        alert("Order placed successfully.");
+        }
+    };
+
+    const triple = new Triple('bb7136b7-abd8-4058-a3d0-c1909b6d770c', options);
+    </script>
+</html>
